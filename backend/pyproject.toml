@@ -1,0 +1,66 @@
+[project]
+name = "medical-store-management-system"
+version = "2.0.0"
+description = "Backend API for Medical Store Management System (MSMS) — Inventory-Driven Architecture"
+requires-python = ">=3.11"
+
+dependencies = [
+    # ── Core Django ──────────────────────────────────────────
+    "django==5.1.4",
+    "djangorestframework==3.15.2",
+
+    # ── Authentication ───────────────────────────────────────
+    "djangorestframework-simplejwt==5.3.1",
+
+    # ── Database ─────────────────────────────────────────────
+    "psycopg2-binary==2.9.10",
+
+    # ── Filtering & Search ───────────────────────────────────
+    "django-filter==24.3",
+
+    # ── API Documentation ────────────────────────────────────
+    "drf-spectacular==0.27.2",
+
+    # ── Environment Variables ────────────────────────────────
+    "python-decouple==3.8",
+
+    # ── CORS ─────────────────────────────────────────────────
+    "django-cors-headers==4.6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    # ── Testing ──────────────────────────────────────────────
+    "pytest==8.3.4",
+    "pytest-django==4.9.0",
+    "pytest-cov==6.0.0",
+    "factory-boy==3.3.1",
+
+    # ── Code Quality ─────────────────────────────────────────
+    "ruff==0.8.6",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest==8.3.4",
+    "pytest-django==4.9.0",
+    "pytest-cov==6.0.0",
+    "factory-boy==3.3.1",
+    "ruff==0.8.6",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.development"
+pythonpath = ["."]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]

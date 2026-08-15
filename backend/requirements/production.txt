@@ -1,0 +1,9 @@
+# ─────────────────────────────────────────────
+# Production Requirements — MSMS
+# Install: uv pip install -r requirements/production.txt
+# ─────────────────────────────────────────────
+
+-r base.txt
+
+# Production Server
+gunicorn==23.0.0
