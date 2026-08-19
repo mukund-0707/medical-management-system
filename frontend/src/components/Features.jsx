@@ -1,152 +1,182 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Pill, Truck, PackageCheck, ReceiptText, ShoppingCart, BarChart2 } from 'lucide-react';
+import SectionHeading from './SectionHeading';
 
-const features = [
-  {
-    icon: Pill,
-    title: 'Medicine Master',
-    desc: 'Centralized medicine database with barcode, batch, expiry, and category management. Never lose track of a single medicine.',
-    tag: 'Core',
-  },
-  {
-    icon: Truck,
-    title: 'Supplier Management',
-    desc: 'Manage supplier profiles, track purchase history, monitor outstanding payments, and maintain reliable vendor relationships.',
-    tag: 'Operations',
-  },
-  {
-    icon: PackageCheck,
-    title: 'Smart Inventory',
-    desc: 'Inventory-driven architecture. Every stock change is recorded through business operations — not manual edits. Full ledger history.',
-    tag: 'Inventory',
-  },
-  {
-    icon: ShoppingCart,
-    title: 'Purchase Tracking',
-    desc: 'Log supplier purchases, auto-update stock levels on receipt, and maintain complete purchase history with invoice records.',
-    tag: 'Purchase',
-  },
-  {
-    icon: ReceiptText,
-    title: 'Barcode Billing',
-    desc: 'Lightning-fast barcode-based billing. Scan medicine, auto-fetch price & stock, generate GST invoice in seconds.',
-    tag: 'Billing',
-  },
-  {
-    icon: BarChart2,
-    title: 'Dashboard & Reports',
-    desc: 'Real-time analytics, sales trends, low stock alerts, expiry warnings, and detailed reports — all on one screen.',
-    tag: 'Analytics',
-  },
-];
+/* Cursor-following spotlight — the small detail that makes cards feel alive */
+function BentoCard({ children, className = '', delay = 0, inView }) {
+  const ref = useRef(null);
 
-const containerVariants = {
-  hidden:   {},
-  visible:  { transition: { staggerChildren: 0.1 } },
-};
-
-const cardVariants = {
-  hidden:   { opacity: 0, y: 30 },
-  visible:  { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
-};
-
-export default function Features() {
-  const ref    = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const onMove = (e) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+    el.style.setProperty('--my', `${e.clientY - r.top}px`);
+  };
 
   return (
-    <section id="features" className="relative py-24 sm:py-32" style={{ background: '#0a0902' }}>
-      <div className="divider-gold absolute top-0 inset-x-0" />
+    <motion.div
+      ref={ref}
+      onMouseMove={onMove}
+      initial={{ opacity: 0, y: 26 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ delay, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className={`group surface card-lift edge-light relative overflow-hidden rounded-3xl p-6 sm:p-7 ${className}`}
+    >
+      <span
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{
+          background:
+            'radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(245,194,76,0.10), transparent 62%)',
+        }}
+      />
+      <div className="relative">{children}</div>
+    </motion.div>
+  );
+}
 
-      <div className="max-w-7xl mx-auto px-5 sm:px-8">
-
-        {/* Section header */}
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center mb-16 sm:mb-20"
+function CardHead({ icon: Icon, tag, title }) {
+  return (
+    <>
+      <div className="mb-5 flex items-start justify-between">
+        <span
+          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-gold-300 transition-colors duration-500 group-hover:border-gold-400/40 group-hover:text-gold-200"
         >
-          <div
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase mb-5"
-            style={{ border: '1px solid rgba(212,160,23,0.25)', background: 'rgba(212,160,23,0.07)', color: '#d4a017' }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-gold-500" />
-            All-in-One Platform
-          </div>
-          <h2 className="text-3xl sm:text-5xl md:text-[52px] font-extrabold tracking-tight text-white leading-[1.1] mb-5">
-            Everything Your{' '}
-            <span className="shimmer-text">Medical Store</span>
-            <br className="hidden sm:block" />
-            {' '}Needs
-          </h2>
-          <p className="text-white/45 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-            From medicine management to final reports — every module is tightly integrated
-            so your store runs on autopilot.
-          </p>
-        </motion.div>
+          <Icon size={19} strokeWidth={1.7} />
+        </span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/25">{tag}</span>
+      </div>
+      <h3 className="font-display mb-2.5 text-[19px] font-bold tracking-tight text-white">{title}</h3>
+    </>
+  );
+}
 
-        {/* Cards grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
-        >
-          {features.map((f, idx) => (
-            <motion.div
-              key={f.title}
-              variants={cardVariants}
-              className="group feature-card relative rounded-2xl p-6 sm:p-7 cursor-default overflow-hidden"
-              style={{
-                background: 'rgba(255,255,255,0.025)',
-                border: '1px solid rgba(212,160,23,0.1)',
-              }}
-            >
-              {/* Hover glow bg */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
-                style={{ background: 'radial-gradient(ellipse at top left, rgba(212,160,23,0.05), transparent 70%)' }}
-              />
+export default function Features() {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-90px' });
 
-              {/* Icon */}
-              <div
-                className="inline-flex items-center justify-center w-11 h-11 rounded-xl mb-5"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(212,160,23,0.2), rgba(212,160,23,0.08))',
-                  border: '1px solid rgba(212,160,23,0.25)',
-                }}
-              >
-                <f.icon size={20} className="text-gold-400" strokeWidth={1.8} />
+  return (
+    <section id="features" ref={ref} className="relative py-24 sm:py-32">
+      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+        <SectionHeading
+          eyebrow="All-in-one platform"
+          title={<>Every module your <span className="accent-serif text-gold-gradient">store</span> needs</>}
+          sub="Medicine master to final report — tightly integrated, so nothing has to be typed twice."
+          inView={inView}
+        />
+
+        <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
+          {/* ── Wide: inventory ── */}
+          <BentoCard className="lg:col-span-4" delay={0} inView={inView}>
+            <CardHead icon={PackageCheck} tag="Inventory" title="Inventory that updates itself" />
+            <p className="max-w-md text-[14px] leading-relaxed text-white/45">
+              Stock moves only through real business events — purchase in, sale out, adjustment logged.
+              Every change writes a ledger row, so the number on screen is always the number on the shelf.
+            </p>
+
+            <div className="mt-6 flex flex-col gap-2.5">
+              {[
+                { name: 'Pantop 40 mg', pct: 74, tone: '#6ee7b7' },
+                { name: 'Amoxyclav 625', pct: 22, tone: '#f5c24c' },
+                { name: 'Montek LC', pct: 8, tone: '#f87171' },
+              ].map((r, i) => (
+                <div key={r.name} className="flex items-center gap-3">
+                  <span className="w-28 shrink-0 text-[11px] text-white/55">{r.name}</span>
+                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.06]">
+                    <motion.span
+                      initial={{ width: 0 }}
+                      animate={inView ? { width: `${r.pct}%` } : {}}
+                      transition={{ delay: 0.35 + i * 0.12, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                      className="block h-full rounded-full"
+                      style={{ background: r.tone }}
+                    />
+                  </div>
+                  <span className="w-9 shrink-0 text-right font-mono text-[10px] text-white/35">{r.pct}%</span>
+                </div>
+              ))}
+            </div>
+          </BentoCard>
+
+          {/* ── Tall: billing ── */}
+          <BentoCard className="lg:col-span-2" delay={0.08} inView={inView}>
+            <CardHead icon={ReceiptText} tag="Billing" title="Scan. Bill. Print." />
+            <p className="text-[14px] leading-relaxed text-white/45">
+              Barcode in, price and stock out. GST invoice ready before the customer opens their wallet.
+            </p>
+            <div className="mt-6 flex h-16 items-end gap-[3px] opacity-70">
+              {[3, 1, 2, 4, 1, 2, 1, 3, 2, 1, 4, 2, 1, 3, 1, 2, 3, 1].map((w, i) => (
+                <span key={i} className="block h-full rounded-sm bg-white/45" style={{ width: w }} />
+              ))}
+            </div>
+            <p className="mt-3 font-mono text-[10px] tracking-[0.2em] text-white/25">₹ 225.40 · 3 items</p>
+          </BentoCard>
+
+          {/* ── Trio ── */}
+          <BentoCard className="lg:col-span-2" delay={0.14} inView={inView}>
+            <CardHead icon={Pill} tag="Core" title="Medicine master" />
+            <p className="text-[14px] leading-relaxed text-white/45">
+              One clean database — barcode, batch, expiry, HSN, category and rate, all in a single record.
+            </p>
+          </BentoCard>
+
+          <BentoCard className="lg:col-span-2" delay={0.2} inView={inView}>
+            <CardHead icon={Truck} tag="Operations" title="Supplier ledger" />
+            <p className="text-[14px] leading-relaxed text-white/45">
+              Vendor profiles, purchase history and outstanding payments — know who you owe, to the rupee.
+            </p>
+          </BentoCard>
+
+          <BentoCard className="lg:col-span-2" delay={0.26} inView={inView}>
+            <CardHead icon={ShoppingCart} tag="Purchase" title="Purchase entry" />
+            <p className="text-[14px] leading-relaxed text-white/45">
+              Log an invoice once; stock, batch and cost price update on receipt without a second entry.
+            </p>
+          </BentoCard>
+
+          {/* ── Wide: reports ── */}
+          <BentoCard className="lg:col-span-6" delay={0.32} inView={inView}>
+            <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
+              <div>
+                <CardHead icon={BarChart2} tag="Analytics" title="Reports you'll actually open" />
+                <p className="max-w-md text-[14px] leading-relaxed text-white/45">
+                  Daily sales, fast movers, dead stock, expiry in the next 90 days, GST summary — every
+                  report is a click away and always current, because it reads the same ledger the billing
+                  counter writes to.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {['Daily closing', 'GST summary', 'Expiry watch', 'Dead stock'].map((t) => (
+                    <span
+                      key={t}
+                      className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] text-white/50"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </div>
 
-              {/* Tag */}
-              <span
-                className="absolute top-6 right-6 text-[10px] font-bold tracking-wider uppercase"
-                style={{ color: 'rgba(212,160,23,0.35)' }}
-              >
-                {f.tag}
-              </span>
-
-              {/* Content */}
-              <h3 className="text-base sm:text-lg font-bold text-white mb-2.5 tracking-tight">
-                {f.title}
-              </h3>
-              <p className="text-sm text-white/45 leading-relaxed">{f.desc}</p>
-
-              {/* Bottom gold line */}
-              <div
-                className="absolute bottom-0 left-6 right-6 h-[1.5px] rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"
-                style={{ background: 'linear-gradient(90deg, #d4a017, #f4c040, #d4a017)' }}
-              />
-            </motion.div>
-          ))}
-        </motion.div>
+              <div className="flex h-36 items-end gap-2 sm:h-40">
+                {[38, 52, 44, 67, 58, 82, 71, 90, 63].map((h, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ height: 0 }}
+                    animate={inView ? { height: `${h}%` } : {}}
+                    transition={{ delay: 0.5 + i * 0.05, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                    className="block flex-1 rounded-t-lg"
+                    style={{
+                      background:
+                        i === 7
+                          ? 'linear-gradient(to top, #a9761a, #f5c24c)'
+                          : 'linear-gradient(to top, rgba(255,255,255,0.04), rgba(255,255,255,0.16))',
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          </BentoCard>
+        </div>
       </div>
-
-      <div className="divider-gold absolute bottom-0 inset-x-0" />
     </section>
   );
 }

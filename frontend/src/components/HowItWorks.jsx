@@ -1,131 +1,178 @@
-import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence, useInView, useScroll, useSpring } from 'framer-motion';
 import { Truck, PackageCheck, ScanLine, Receipt, BarChart2 } from 'lucide-react';
+import SectionHeading from './SectionHeading';
 
 const steps = [
   {
-    num: '01',
     icon: Truck,
-    title: 'Record Purchase',
-    desc: 'Log medicines received from suppliers. System automatically increases inventory — batch-wise, with full traceability.',
+    title: 'Record the purchase',
+    desc: 'Enter the supplier invoice once. Batch, expiry, cost and MRP are captured together and stock rises automatically.',
+    meta: 'Supplier → Store',
   },
   {
-    num: '02',
     icon: PackageCheck,
-    title: 'Inventory Updates',
-    desc: 'Every purchase, sale, or adjustment creates a ledger entry. Stock is always accurate — zero manual calculation needed.',
+    title: 'Inventory writes a ledger row',
+    desc: 'Nothing is edited by hand. Every movement — in, out, adjusted — becomes a permanent, traceable entry.',
+    meta: 'Auto ledger',
   },
   {
-    num: '03',
     icon: ScanLine,
-    title: 'Barcode Billing',
-    desc: 'Cashier scans barcode. System instantly fetches medicine name, price, and available stock. Bill in seconds.',
+    title: 'Cashier scans the barcode',
+    desc: 'Name, batch, rate and available quantity appear instantly. No lookup, no typing, no guesswork at the counter.',
+    meta: '< 1 second',
   },
   {
-    num: '04',
     icon: Receipt,
-    title: 'Invoice Generated',
-    desc: 'Automatic GST invoice generation after every sale. Inventory is reduced simultaneously — no double work.',
+    title: 'GST invoice prints itself',
+    desc: 'Tax splits, rounding and totals are computed on the fly, and the sold quantity leaves inventory in the same action.',
+    meta: 'Compliant by default',
   },
   {
-    num: '05',
     icon: BarChart2,
-    title: 'Reports & Insights',
-    desc: 'Dashboard shows sales trends, low stock alerts, expiry warnings, and full reports — updated in real time.',
+    title: 'Reports stay current',
+    desc: 'Sales trends, low-stock and expiry alerts update the moment a bill closes — the dashboard is never stale.',
+    meta: 'Real time',
   },
 ];
 
-export default function HowItWorks() {
-  const ref    = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
+function StepRow({ step, index, active, onEnter }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { margin: '-45% 0px -45% 0px' });
+
+  useEffect(() => {
+    if (inView) onEnter(index);
+  }, [inView, index, onEnter]);
+
+  const Icon = step.icon;
 
   return (
-    <section id="workflow" className="relative py-24 sm:py-32" style={{ background: '#111009' }}>
-      <div className="divider-gold absolute top-0 inset-x-0" />
+    <div ref={ref} className="relative pl-12 sm:pl-16">
+      {/* Node on the rail */}
+      <span
+        className={`absolute left-[13px] top-7 h-3 w-3 -translate-x-1/2 rounded-full border-2 transition-all duration-500 sm:left-[17px] ${
+          active
+            ? 'scale-125 border-gold-400 bg-gold-400 shadow-[0_0_18px_rgba(245,194,76,0.7)]'
+            : 'border-white/20 bg-ink-950'
+        }`}
+      />
 
-      <div className="max-w-7xl mx-auto px-5 sm:px-8">
-
-        {/* Header */}
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center mb-16 sm:mb-20"
-        >
-          <div
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase mb-5"
-            style={{ border: '1px solid rgba(212,160,23,0.25)', background: 'rgba(212,160,23,0.07)', color: '#d4a017' }}
+      <motion.div
+        initial={{ opacity: 0, y: 22 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-80px' }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className={`surface mb-4 rounded-3xl p-6 transition-all duration-500 sm:p-7 ${
+          active ? 'border-gold-400/25 bg-white/[0.05]' : 'opacity-70'
+        }`}
+      >
+        <div className="mb-3 flex items-center gap-3">
+          <span
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-2xl transition-colors duration-500 ${
+              active ? 'bg-gold-400/15 text-gold-300' : 'bg-white/[0.05] text-white/45'
+            }`}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-gold-500" />
-            How It Works
-          </div>
-          <h2 className="text-3xl sm:text-5xl md:text-[52px] font-extrabold tracking-tight text-white leading-[1.1] mb-5">
-            One Flow,{' '}
-            <span className="shimmer-text">Zero Confusion</span>
-          </h2>
-          <p className="text-white/45 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-            A seamless workflow from supplier to sale — fully automated, fully auditable.
-          </p>
-        </motion.div>
+            <Icon size={18} strokeWidth={1.7} />
+          </span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/30">
+            Step {String(index + 1).padStart(2, '0')} · {step.meta}
+          </span>
+        </div>
 
-        {/* Steps list */}
-        <div className="flex flex-col gap-5 max-w-3xl mx-auto">
-          {steps.map((step, i) => (
-            <motion.div
-              key={step.num}
-              initial={{ opacity: 0, x: -24 }}
-              animate={inView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 0.1 + i * 0.1, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-              className="group flex items-start gap-5 rounded-2xl p-5 sm:p-6 transition-all duration-300"
-              style={{
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(212,160,23,0.1)',
-              }}
-              whileHover={{
-                borderColor: 'rgba(212,160,23,0.3)',
-                backgroundColor: 'rgba(212,160,23,0.03)',
-              }}
-            >
-              {/* Step number + icon */}
-              <div className="shrink-0 flex flex-col items-center gap-2">
+        <h3 className="font-display mb-2 text-[19px] font-bold tracking-tight text-white">
+          {step.title}
+        </h3>
+        <p className="text-[14px] leading-relaxed text-white/45">{step.desc}</p>
+      </motion.div>
+    </div>
+  );
+}
+
+export default function HowItWorks() {
+  const sectionRef = useRef(null);
+  const railRef    = useRef(null);
+  const headInView = useInView(sectionRef, { once: true, margin: '-90px' });
+  const [active, setActive] = useState(0);
+
+  const { scrollYProgress } = useScroll({
+    target: railRef,
+    offset: ['start 60%', 'end 60%'],
+  });
+  const railScale = useSpring(scrollYProgress, { stiffness: 90, damping: 22, restDelta: 0.001 });
+
+  return (
+    <section id="workflow" ref={sectionRef} className="relative border-t border-white/[0.06] py-24 sm:py-32">
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] opacity-60"
+        style={{ background: 'radial-gradient(ellipse 50% 100% at 50% 0%, rgba(224,165,38,0.10), transparent 70%)' }}
+      />
+
+      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+        <SectionHeading
+          eyebrow="How it works"
+          title={<>One flow, <span className="accent-serif text-gold-gradient">zero</span> confusion</>}
+          sub="From the supplier's invoice to the customer's receipt — five steps, fully automated and fully auditable."
+          inView={headInView}
+        />
+
+        <div className="mt-16 grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
+          {/* Sticky live panel */}
+          <div className="hidden lg:block">
+            <div className="sticky top-28">
+              <div className="glass relative overflow-hidden rounded-3xl p-8">
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(212,160,23,0.18), rgba(212,160,23,0.06))',
-                    border: '1px solid rgba(212,160,23,0.25)',
-                    boxShadow: '0 4px 16px rgba(212,160,23,0.15)',
-                  }}
-                >
-                  <step.icon size={21} className="text-gold-400" strokeWidth={1.8} />
-                </div>
-                {/* Connector dot */}
-                {i < steps.length - 1 && (
-                  <div className="w-px h-6 mt-1" style={{ background: 'rgba(212,160,23,0.15)' }} />
-                )}
-              </div>
-
-              {/* Text */}
-              <div className="pt-1">
-                <div className="flex items-center gap-3 mb-1.5">
-                  <span
-                    className="text-[10px] font-bold tracking-widest uppercase"
-                    style={{ color: 'rgba(212,160,23,0.45)' }}
+                  className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full blur-3xl"
+                  style={{ background: 'radial-gradient(circle, rgba(224,165,38,0.28), transparent 65%)' }}
+                />
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={active}
+                    initial={{ opacity: 0, y: 16, filter: 'blur(6px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: -16, filter: 'blur(6px)' }}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    className="relative"
                   >
-                    Step {step.num}
-                  </span>
+                    <span className="font-display block text-[76px] font-extrabold leading-none tracking-tighter text-white/[0.08]">
+                      {String(active + 1).padStart(2, '0')}
+                    </span>
+                    <h4 className="font-display mt-4 text-2xl font-bold leading-tight tracking-tight text-white">
+                      {steps[active].title}
+                    </h4>
+                    <p className="mt-3 text-[14px] leading-relaxed text-white/45">
+                      {steps[active].desc}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+
+                <div className="mt-8 flex gap-1.5">
+                  {steps.map((s, i) => (
+                    <span
+                      key={s.title}
+                      className={`h-1 flex-1 rounded-full transition-all duration-500 ${
+                        i <= active ? 'bg-gold-400' : 'bg-white/10'
+                      }`}
+                    />
+                  ))}
                 </div>
-                <h3 className="text-base sm:text-lg font-bold text-white mb-1.5 tracking-tight">
-                  {step.title}
-                </h3>
-                <p className="text-sm text-white/45 leading-relaxed">{step.desc}</p>
               </div>
-            </motion.div>
-          ))}
+            </div>
+          </div>
+
+          {/* Steps with scroll-linked rail */}
+          <div ref={railRef} className="relative">
+            <span className="absolute left-[13px] top-0 h-full w-px bg-white/[0.08] sm:left-[17px]" />
+            <motion.span
+              style={{ scaleY: railScale }}
+              className="absolute left-[13px] top-0 h-full w-px origin-top bg-gradient-to-b from-gold-300 to-gold-600 sm:left-[17px]"
+            />
+
+            {steps.map((step, i) => (
+              <StepRow key={step.title} step={step} index={i} active={active === i} onEnter={setActive} />
+            ))}
+          </div>
         </div>
       </div>
-
-      <div className="divider-gold absolute bottom-0 inset-x-0" />
     </section>
   );
 }
