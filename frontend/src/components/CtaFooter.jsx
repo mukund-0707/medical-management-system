@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { ArrowRight, Check, Mail, Phone, MapPin } from 'lucide-react';
-import { ABMark } from './Logo';
+import { ABLockup } from './Logo';
 
 const fields = [
   { name: 'name',  type: 'text',  placeholder: 'Your name',        half: true  },
@@ -167,16 +167,9 @@ export default function CtaFooter() {
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="grid grid-cols-2 gap-10 pb-14 lg:grid-cols-5">
             <div className="col-span-2">
-              <div className="mb-5 flex items-center gap-3">
-                <ABMark size={38} />
-                <span className="flex flex-col leading-none">
-                  <span className="font-display text-[15px] font-bold tracking-tight text-white">Aai Bhavani</span>
-                  <span className="mt-1 text-[9px] font-medium uppercase tracking-[0.32em] text-gold-400/60">Group</span>
-                </span>
-              </div>
+              <ABLockup width={230} className="-ml-2 mb-5" />
               <p className="max-w-[260px] text-[13.5px] leading-relaxed text-white/40">
                 Modern software for Indian businesses — built with quality at the core.
-                Trusted values, future vision.
               </p>
             </div>
 
