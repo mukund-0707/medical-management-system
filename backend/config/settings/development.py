@@ -46,4 +46,5 @@ DATABASES = {
 # ─────────────────────────────────────────────
 # CORS (for React frontend in dev)
 # ─────────────────────────────────────────────
-# CORS_ALLOW_ALL_ORIGINS = True  # Enable when cors-headers is installed
+CORS_ALLOW_ALL_ORIGINS = True  # Development only — allow all origins
+CORS_ALLOW_CREDENTIALS = True

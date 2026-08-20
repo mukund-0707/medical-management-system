@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Logo, { ABMark } from './Logo';
 
 const navLinks = [
@@ -14,6 +15,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled]     = useState(false);
   const [active, setActive]         = useState('hero');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -91,7 +93,10 @@ export default function Navbar() {
           </ul>
 
           <div className="hidden items-center gap-2 md:flex">
-            <button className="rounded-full px-4 py-2 text-[13px] font-medium text-white/55 transition-colors hover:text-white">
+            <button
+              onClick={() => navigate('/login')}
+              className="rounded-full px-4 py-2 text-[13px] font-medium text-white/55 transition-colors hover:text-white"
+            >
               Sign In
             </button>
             <motion.button
@@ -164,7 +169,10 @@ export default function Navbar() {
               transition={{ delay: 0.3, duration: 0.4 }}
               className="flex flex-col gap-3"
             >
-              <button className="btn-ghost w-full rounded-2xl py-3.5 text-sm font-medium">
+              <button
+                onClick={() => { setMobileOpen(false); navigate('/login'); }}
+                className="btn-ghost w-full rounded-2xl py-3.5 text-sm font-medium"
+              >
                 Sign In
               </button>
               <button

@@ -1,0 +1,26 @@
+Ab next phase mein hume actual MSMS software banana hai. Abhi ke liye authentication simple rakhna hai: backend mein ek fixed admin credential ho:
+
+Username: admin
+Password: 1234
+
+Jab user successfully sign in kare, to existing intro/landing interface bilkul nahi dikhna chahiye. Login ke baad directly MSMS dashboard/application open hona chahiye.
+
+Important: http://localhost:5173/ par abhi jo existing interface/intro hai, login ke baad woh completely replace/hide ho jana chahiye. Login ke baad ek completely new MSMS interface hona chahiye.
+
+MSMS ko ek proper standalone application experience ki tarah design karo. Iske andar iska apna:(jo bhi needed ho muje nhi malum)
+
+Navbar
+Sidebar/navigation
+Dashboard
+Pages/modules
+User/profile area
+Settings
+Required actions and workflows
+
+hone chahiye. Existing website ke components/design ko blindly reuse mat karna.
+
+Design ke liye current modern enterprise/SaaS products se research kar sakte ho. Overall UI modern, premium, professional, trustworthy aur easy-to-use feel hona chahiye. Design over-complicated nahi hona chahiye; clean hierarchy, good spacing, typography, colors aur intuitive navigation maintain karo.
+
+Sabse important: MSMS ka design aur structure existing intro website se clearly alag feel hona chahiye. Login ke baad user ko aisa feel hona chahiye ki woh ek proper enterprise software/application mein enter hua hai.
+
+Pehle MSMS ka overall information architecture aur UI/UX structure decide karo, phir implementation karo. Jahan requirements explicitly defined nahi hain, wahan sensible product/design decisions tum khud lo.
