@@ -42,7 +42,7 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-8 shadow-2xl">
           <h2 className="text-lg font-semibold text-white mb-1">Sign in to your account</h2>
           <p className="text-slate-400 text-sm mb-6">Enter your credentials to access the system</p>
 

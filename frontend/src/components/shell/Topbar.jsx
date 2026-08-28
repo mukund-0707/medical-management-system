@@ -19,25 +19,28 @@ export default function Topbar({ onMenuClick }) {
   const title = PAGE_TITLES[pathname] || 'MSMS';
 
   return (
-    <header className="h-16 flex items-center gap-4 px-6 bg-slate-900 border-b border-slate-800 flex-shrink-0">
-      {/* Menu toggle */}
+    <header className="h-14 md:h-16 flex items-center gap-2 md:gap-4 px-3 md:px-6 bg-slate-900 border-b border-slate-800 flex-shrink-0">
+
+      {/* Hamburger menu */}
       <button
         onClick={onMenuClick}
-        className="text-slate-400 hover:text-white transition p-1.5 rounded-lg hover:bg-slate-800"
+        className="text-slate-400 hover:text-white transition p-1.5 rounded-lg hover:bg-slate-800 flex-shrink-0"
+        aria-label="Toggle menu"
       >
         <Menu size={20} />
       </button>
 
       {/* Page title */}
-      <h1 className="text-white font-semibold text-base flex-1">{title}</h1>
+      <h1 className="text-white font-semibold text-sm md:text-base flex-1 truncate">{title}</h1>
 
-      {/* Right side actions */}
-      <div className="flex items-center gap-2">
-        {/* Search */}
-        <button className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg px-3 py-1.5 text-slate-400 hover:text-white text-sm transition">
+      {/* Right side */}
+      <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
+
+        {/* Search button — text/kbd hidden on mobile */}
+        <button className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg px-2 md:px-3 py-1.5 text-slate-400 hover:text-white text-sm transition">
           <Search size={14} />
-          <span className="hidden sm:inline text-xs">Search…</span>
-          <kbd className="hidden sm:inline text-[10px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-slate-500 ml-1">⌘K</kbd>
+          <span className="hidden md:inline text-xs">Search…</span>
+          <kbd className="hidden lg:inline text-[10px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-slate-500 ml-1">⌘K</kbd>
         </button>
 
         {/* Notifications */}
@@ -47,7 +50,7 @@ export default function Topbar({ onMenuClick }) {
         </button>
 
         {/* Avatar */}
-        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:ring-2 hover:ring-blue-500 transition">
+        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:ring-2 hover:ring-blue-500 transition flex-shrink-0">
           A
         </div>
       </div>
